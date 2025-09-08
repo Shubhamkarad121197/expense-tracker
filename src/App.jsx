@@ -1,9 +1,15 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
+import ExpenseTrackerHome from './component/ExpenseTrackerHome'
+import { SnackbarProvider, useSnackbar } from 'notistack'
 
 const App=()=>{
-  return (<></>)
+  return (<>
+
+ <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+      <ExpenseTrackerHome/>
+  </SnackbarProvider>
+  
+  </>)
 }
 export default App
