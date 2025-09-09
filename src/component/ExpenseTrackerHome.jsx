@@ -162,6 +162,7 @@ const ExpenseTrackerHome = () => {
               <div className="inputBox">
                 <input
                   type="text"
+                  name='title'
                   placeholder="Title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -172,6 +173,7 @@ const ExpenseTrackerHome = () => {
                 <input
                   type="number"
                   placeholder="Price"
+                  name='price'
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   required
@@ -183,6 +185,7 @@ const ExpenseTrackerHome = () => {
               <div className="inputBox">
                 <input
                   type="text"
+                  name='category'
                   placeholder="Select Category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
@@ -192,6 +195,7 @@ const ExpenseTrackerHome = () => {
               <div className="inputBox">
                 <input
                   type="date"
+                  name="date"
                   placeholder="dd/mm/yyyy"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
@@ -250,9 +254,10 @@ const ExpenseTrackerHome = () => {
             min="1"
           />
           <div style={{ marginTop: "10px" }}>
-            <button type="submit">Add</button>
+            <button type="submit" className="addExpenseButtonModal">Add Balance</button>
             <button
               type="button"
+               className="closeExpenseButtonModal"
               onClick={() => setAddBalanceModalOpen(false)}
               style={{ marginLeft: "10px" }}
             >
