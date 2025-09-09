@@ -28,16 +28,15 @@ const ExpenseTrackerHome = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
-  // ✅ Load saved data from localStorage and set defaults if missing
   useEffect(() => {
-    const savedTransactions = JSON.parse(localStorage.getItem("expenses")); // <-- changed
+    const savedTransactions = JSON.parse(localStorage.getItem("expenses")); 
     const savedBalance = JSON.parse(localStorage.getItem("balance"));
     const savedExpenseCost = JSON.parse(localStorage.getItem("expenseCost"));
 
     if (savedTransactions) {
       setRecentTransaction(savedTransactions);
     } else {
-      localStorage.setItem("expenses", JSON.stringify([])); // <-- changed
+      localStorage.setItem("expenses", JSON.stringify([])); 
     }
 
     if (savedBalance !== null) {
@@ -55,9 +54,9 @@ const ExpenseTrackerHome = () => {
     }
   }, []);
 
-  // ✅ Save data to localStorage on changes
+
   useEffect(() => {
-    localStorage.setItem("expenses", JSON.stringify(recentTransaction)); // <-- changed
+    localStorage.setItem("expenses", JSON.stringify(recentTransaction)); 
     localStorage.setItem("balance", JSON.stringify(balanceVal));
     localStorage.setItem("expenseCost", JSON.stringify(expenseCost));
   }, [recentTransaction, balanceVal, expenseCost]);
