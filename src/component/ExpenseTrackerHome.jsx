@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RecentTransaction from "./recentTransaction";
 import ExpenceCard from "./expenceCard";
 import PiechartComponent from "./pieChart";
@@ -10,7 +10,7 @@ import { useSnackbar } from "notistack";
 ReactModal.setAppElement("#root");
 
 const ExpenseTrackerHome = () => {
-  const { enqueueSnackbar } = useSnackbar(); // ✅ hook inside component
+  const { enqueueSnackbar } = useSnackbar();
 
   const [walletIsOpen, setWalletIsOpen] = useState(false);
   const [addBalanceModalOpen, setAddBalanceModalOpen] = useState(false);
@@ -28,6 +28,26 @@ const ExpenseTrackerHome = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
+  // ✅ Load saved data from localStorage
+  useEffect(() => {
+    const savedTransactions =
+      JSON.parse(localStorage.getItem("transactions")) || [];
+    const savedBalance = JSON.parse(localStorage.getItem("balance")) || 5000;
+    const savedExpenseCost =
+      JSON.parse(localStorage.getItem("expenseCost")) || 0;
+
+    setRecentTransaction(savedTransactions);
+    setBalanceVal(savedBalance);
+    setExpenseCost(savedExpenseCost);
+  }, []);
+
+  // ✅ Save data to localStorage on changes
+  useEffect(() => {
+    localStorage.setItem("transactions", JSON.stringify(recentTransaction));
+    localStorage.setItem("balance", JSON.stringify(balanceVal));
+    localStorage.setItem("expenseCost", JSON.stringify(expenseCost));
+  }, [recentTransaction, balanceVal, expenseCost]);
+
   const addBalance = (e) => {
     e.preventDefault();
     const num = Number(newBalance);
@@ -43,20 +63,20 @@ const ExpenseTrackerHome = () => {
     e.preventDefault();
     const newExpense = { title, price: Number(price), category, date };
 
-    // ✅ check if entered price exceeds balance
     let availableBalance = balanceVal;
     if (isEditing) {
       const oldExpense = recentTransaction[editIndex];
-      availableBalance += Number(oldExpense.price); // allow editing to increase price within old + available
+      availableBalance += Number(oldExpense.price);
     }
 
     if (Number(price) > availableBalance) {
-      enqueueSnackbar("Entered amount exceeds available balance!", { variant: "error" });
-      return; // stop saving
+      enqueueSnackbar("Entered amount exceeds available balance!", {
+        variant: "error",
+      });
+      return;
     }
 
     if (isEditing) {
-      // update mode
       const oldExpense = recentTransaction[editIndex];
       const diff = Number(price) - Number(oldExpense.price);
 
@@ -69,16 +89,16 @@ const ExpenseTrackerHome = () => {
 
       setIsEditing(false);
       setEditIndex(null);
-      enqueueSnackbar("Transaction updated successfully!", { variant: "success" });
+      enqueueSnackbar("Transaction updated successfully!", {
+        variant: "success",
+      });
     } else {
-      // add mode
       setRecentTransaction((prev) => [...prev, newExpense]);
       setBalanceVal((prev) => prev - Number(price));
       setExpenseCost((prev) => prev + Number(price));
       enqueueSnackbar("Transaction added successfully!", { variant: "success" });
     }
 
-    // reset form
     setTitle("");
     setPrice("");
     setCategory("");
@@ -123,7 +143,7 @@ const ExpenseTrackerHome = () => {
               setRecentTransaction={setRecentTransaction}
               setBalanceVal={setBalanceVal}
               setExpenseCost={setExpenseCost}
-              onEdit={handleEditExpense} // ✅ pass edit handler
+              onEdit={handleEditExpense}
             />
           </div>
           <div>
@@ -162,7 +182,7 @@ const ExpenseTrackerHome = () => {
               <div className="inputBox">
                 <input
                   type="text"
-                  name='title'
+                  name="title"
                   placeholder="Title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -172,8 +192,8 @@ const ExpenseTrackerHome = () => {
               <div className="inputBox">
                 <input
                   type="number"
+                  name="price"
                   placeholder="Price"
-                  name='price'
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   required
@@ -183,14 +203,17 @@ const ExpenseTrackerHome = () => {
             </div>
             <div style={{ display: "flex", gap: "2em" }}>
               <div className="inputBox">
-                <input
-                  type="text"
-                  name='category'
-                  placeholder="Select Category"
+                <select
+                  name="category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   required
-                />
+                >
+                  <option value="">Select Category</option>
+                  <option value="food">Food</option>
+                  <option value="travel">Travel</option>
+                  <option value="entertainment">Entertainment</option>
+                </select>
               </div>
               <div className="inputBox">
                 <input
@@ -247,17 +270,18 @@ const ExpenseTrackerHome = () => {
           <input
             type="number"
             placeholder="Income Amount"
-
             value={newBalance}
             onChange={(e) => setNewBalance(e.target.value)}
             required
             min="1"
           />
           <div style={{ marginTop: "10px" }}>
-            <button type="submit" className="addExpenseButtonModal">Add Balance</button>
+            <button type="submit" className="addExpenseButtonModal">
+              Add Balance
+            </button>
             <button
               type="button"
-               className="closeExpenseButtonModal"
+              className="closeExpenseButtonModal"
               onClick={() => setAddBalanceModalOpen(false)}
               style={{ marginLeft: "10px" }}
             >
