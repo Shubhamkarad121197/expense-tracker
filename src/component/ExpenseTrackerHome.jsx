@@ -242,7 +242,8 @@ const ExpenseTrackerHome = () => {
         <form onSubmit={addBalance}>
           <input
             type="number"
-            placeholder="Enter Amount"
+            placeholder="Income Amount"
+
             value={newBalance}
             onChange={(e) => setNewBalance(e.target.value)}
             required
